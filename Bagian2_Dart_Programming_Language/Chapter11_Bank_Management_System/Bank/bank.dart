@@ -5,6 +5,60 @@ void main() {
       accountType: AccountType.general,
       balance: 500000,
       openingDate: DateTime.now());
+
+  SavingsAccount joshuaSA = SavingsAccount(
+      accountName: "Joshua",
+      accountId: "91288927",
+      accountType: AccountType.saving,
+      balance: 500000,
+      openingDate: DateTime(2024, 1, 15));
+
+  InvestmentAccount joshuaIA = InvestmentAccount(
+      accountName: "Joshua",
+      accountId: "9128328",
+      accountType: AccountType.invest,
+      balance: 1000000,
+      openingDate: DateTime.now(),
+      investedBalance: 0);
+
+  // General account
+  print("Generelan Account of Joshua");
+  print("Account name: ${joshuaGA.accountName}");
+  print("Account id ${joshuaGA.accountId}");
+  print("Current balance ${joshuaGA.getCurrentBalance()}");
+  print("Deposit ${joshuaGA.deposit(500000)}");
+  print("Withdraw ${joshuaGA.withDraw(100000)}");
+  print(
+      "${joshuaGA.accountName}'s current balance(date:${DateTime.now()}) : ${joshuaGA.getCurrentBalance()}");
+  print("\n____________________________________\n");
+  //Saving account
+  print("Saving Account of Joshua");
+  print("Account name: ${joshuaSA.accountName}");
+  print("Account id ${joshuaSA.accountId}");
+  print("Account type ${joshuaSA.accountType.toString()}");
+  print("Current balance ${joshuaSA.getCurrentBalance()}");
+  print("Deposit ${joshuaSA.deposit(550000)}");
+  print("Withdraw ${joshuaSA.withDraw(100000)}");
+  print(
+      "${joshuaSA.accountName}'s current balance(date:${DateTime.now()}) : ${joshuaSA.getCurrentBalance()}");
+
+  print("\n____________________________________\n");
+
+  // Investment Account
+  print("Investment Account of Joshua");
+  print("Account name: ${joshuaIA.accountName}");
+  print("Account id ${joshuaIA.accountId}");
+  print("Account type ${joshuaIA.accountType.toString()}");
+  print("Current balance ${joshuaIA.getCurrentBalance()}");
+  print("Current invested balance ${joshuaIA.investedBalance}");
+  print("Deposit ${joshuaIA.deposit(550000)}");
+  print("Withdraw ${joshuaIA.withDraw(100000)}");
+  print("Buy stock ${joshuaIA.buyStock(200000)}");
+
+  print(
+      "${joshuaIA.accountName}'s current balance(date:${DateTime.now()}) : ${joshuaIA.getCurrentBalance()}");
+  print(
+      "${joshuaIA.accountName}'s investment current balance(date:${DateTime.now()}) : ${joshuaIA.getInvestedBalance()}");
 }
 
 enum AccountType {
@@ -34,13 +88,13 @@ abstract class Account {
       throw Exception("WithDrawException: user balance is not enough");
     } else {
       balance -= amount;
-      return balance;
     }
+    return amount;
   }
 
   int deposit(int amount) {
     balance += amount;
-    return balance;
+    return amount;
   }
 
   int getCurrentBalance() => balance;
@@ -90,19 +144,21 @@ class SavingsAccount extends Account {
           closingDate: closingDate,
         );
 
+  @override
   int getCurrentBalance() => super.getCurrentBalance();
 
   int deposit(int amount) {
     if (amount > 500000) {
       int interest = (amount * 0.01).floor();
+      // double interest_double = (amount * 0.01);
+      // print("interest double $interest_double");
       balance = balance + amount + interest;
     } else {
       balance += amount;
     }
-    return balance;
+    return amount;
   }
 
-  @override
   int withDraw(int amount) {
     if (DateTime.now().difference(openingDate).inDays < 90) {
       throw Exception("You can withdraw after 90 days");
@@ -113,13 +169,13 @@ class SavingsAccount extends Account {
         balance -= amount;
       }
     }
-    return balance;
+    return amount;
   }
 
   int getInterest() {
     int interest = (balance * 0.04).floor();
     balance += interest;
-    return balance;
+    return interest;
   }
 }
 
@@ -144,13 +200,16 @@ class InvestmentAccount extends Account {
 
   int getInvestedBalance() => investedBalance;
 
+  @override
+  int getCurrentBalance() => super.getCurrentBalance();
+
   int deposit(int amount) {
     if (amount > 1000000) {
       balance += amount + 25000;
     } else {
       balance += amount;
     }
-    return balance;
+    return amount;
   }
 
   int withDraw(int amount) {
@@ -160,18 +219,18 @@ class InvestmentAccount extends Account {
     } else {
       balance = balance - (amount + calculatedTax);
     }
-    return balance;
+    return amount;
   }
 
   int buyStock(int amount) {
     if (balance < amount) {
       throw Exception("You don't have enough money");
     } else {
-      int caluclatedTax = (amount * 0.001).floor();
-      balance = balance - (amount + caluclatedTax);
+      int calculatedTax = (amount * 0.001).floor();
+      balance = balance - (amount + calculatedTax);
       investedBalance = balance;
-      return balance;
     }
+    return amount;
   }
 
   int sellStock(int amount) {
@@ -181,7 +240,7 @@ class InvestmentAccount extends Account {
       int calculatedTax = (amount * 0.001).floor();
       investedBalance -= amount;
       balance = balance + amount - calculatedTax;
-      return balance;
     }
+    return amount;
   }
 }
